@@ -47,8 +47,11 @@
 <script type="text/javascript">
     var firstNum = '';
     var secondNum = '';
+    var thirdNum = '';
     var check = false;
+    var mainOperator = false;
     var operator;
+    var preMainOperator;
 
     $('.btn').click(function () {
 
@@ -59,8 +62,13 @@
                firstNum += '' + btn;
                document.getElementById('calc_result').innerText += btn;
            } else {
-               secondNum += '' + btn;
-               document.getElementById('calc_result').innerText += btn;
+               if (!mainOperator) {
+                   secondNum += '' + btn;
+                   document.getElementById('calc_result').innerText += btn;
+               } else {
+                   thirdNum += '' + btn;
+                   document.getElementById('calc_result').innerText += btn;
+               }
            }
        } else {
 
@@ -77,16 +85,29 @@
 
                    if (check == true && secondNum!="") {
                        if (operator !== "") {
-                           firstNum = calculate(operator, firstNum, secondNum);
-                           secondNum = "";
-                           operator = 'plus';
+                           if (!mainOperator) {
+                               firstNum = calculate(operator, firstNum, secondNum);
+                               secondNum = "";
+                               operator = 'plus';
+                               preMainOperator = operator;
+                           } else {
+                               secondNum = calculate(operator, secondNum, thirdNum);
+                               thirdNum = '';
+                               firstNum = calculate(preMainOperator, firstNum, secondNum);
+                               secondNum = '';
+                               mainOperator = false;
+                               operator = 'plus';
+                               preMainOperator = operator;
+                           }
                        }
                        else {
                            operator = 'plus';
+                           preMainOperator = operator;
                        }
                    } else {
                        check = true;
                        operator = 'plus';
+                       preMainOperator = operator;
                    }
                    break;
                case 'minus':
@@ -94,15 +115,28 @@
 
                    if (check == true && secondNum!="") {
                        if (operator !== "") {
-                           firstNum = calculate(operator, firstNum, secondNum);
-                           secondNum = "";
-                           operator = 'minus';
+                           if (!mainOperator) {
+                               firstNum = calculate(operator, firstNum, secondNum);
+                               secondNum = "";
+                               operator = 'minus';
+                               preMainOperator = operator;
+                           } else {
+                               secondNum = calculate(operator, secondNum, thirdNum);
+                               thirdNum = '';
+                               firstNum = calculate(preMainOperator, firstNum, secondNum);
+                               secondNum = '';
+                               mainOperator = false;
+                               operator = 'plus';
+                               preMainOperator = operator;
+                           }
                        } else {
                            operator = 'minus';
+                           preMainOperator = operator;
                        }
                    } else {
                        check = true;
                        operator = 'minus';
+                       preMainOperator = operator;
                    }
                    break;
                case 'divis':
@@ -110,9 +144,23 @@
 
                    if (check == true && secondNum!="") {
                        if (operator !== "") {
-                           calculate(operator, firstNum, secondNum);
-                           secondNum = "";
-                           operator = 'divis';
+                           if (!mainOperator) {
+                               if (operator == "multi" || operator == "divis") {
+                                   firstNum = calculate(operator, firstNum, secondNum);
+                                   secondNum = "";
+                                   operator = 'divis';
+                               } else {
+                                   mainOperator = true;
+                                   operator = 'divis';
+                               }
+                           } else {
+                               secondNum = calculate(operator, secondNum, thirdNum);
+                               thirdNum = '';
+                               operator = 'divis';
+                               firstNum = calculate(operator, firstNum, secondNum);
+                               secondNum = '';
+                               mainOperator = false;
+                           }
                        } else {
                            operator = 'divis';
                        }
@@ -126,11 +174,25 @@
 
                    if (check == true && secondNum!="") {
                        if (operator !== "") {
-                           calculate(operator, firstNum, secondNum);
-                           secondNum = '';
-                           operator = 'multi';
+                           if (!mainOperator) {
+                               if (operator == "multi" || operator == "divis") {
+                                   firstNum = calculate(operator, firstNum, secondNum);
+                                   secondNum = "";
+                                   operator = 'multi';
+                               } else {
+                                   mainOperator = true;
+                                   operator = 'multi';
+                               }
+                           } else {
+                               secondNum = calculate(operator, secondNum, thirdNum);
+                               thirdNum = '';
+                               operator = 'multi';
+                               firstNum = calculate(operator, firstNum, secondNum);
+                               secondNum = '';
+                               mainOperator = false;
+                           }
                        } else {
-                           operator = 'multi';
+                           operator = 'divis';
                        }
                    } else {
                        check = true;
@@ -149,45 +211,62 @@
                    else {
                        switch (operator) {
                            case 'plus':
-                               firstNum = parseFloat(firstNum)+parseFloat(secondNum);
+                               firstNum = calculate(operator, firstNum, secondNum);
                                secondNum = '';
                                operator = '';
-                               check = false;
                                document.getElementById('calc_result').innerText = firstNum;
                                break;
                            case 'minus':
-                               firstNum = parseFloat(firstNum)-parseFloat(secondNum);
+                               firstNum = calculate(operator, firstNum, secondNum);
                                secondNum = '';
                                operator = '';
-                               check = false;
                                document.getElementById('calc_result').innerText = firstNum;
                                break;
                            case 'divis':
-                               firstNum = parseFloat(firstNum)/parseFloat(secondNum);
-                               secondNum = '';
-                               operator = '';
-                               check = false;
-                               document.getElementById('calc_result').innerText = firstNum;
+                               if (!mainOperator) {
+                                   firstNum = calculate(operator, firstNum, secondNum);
+                                   secondNum = '';
+                                   operator = '';
+                                   document.getElementById('calc_result').innerText = firstNum;
+                               } else {
+                                   secondNum = calculate(operator, secondNum, thirdNum);
+                                   thirdNum = '';
+                                   firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                   secondNum = '';
+                                   document.getElementById('calc_result').innerText = firstNum;
+                                   operator = '';
+                               }
                                break;
                            case "multi":
-                               firstNum = parseFloat(firstNum)*parseFloat(secondNum);
-                               secondNum = '';
-                               operator = '';
-                               check = false;
-                               document.getElementById('calc_result').innerText = firstNum;
+                               if (!mainOperator) {
+                                   firstNum = calculate(operator, firstNum, secondNum);
+                                   secondNum = '';
+                                   operator = '';
+                                   document.getElementById('calc_result').innerText = firstNum;
+                               } else {
+                                   secondNum = calculate(operator, secondNum, thirdNum);
+                                   thirdNum = '';
+                                   firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                   secondNum = '';
+                                   document.getElementById('calc_result').innerText = firstNum;
+                                   operator = '';
+                               }
                                break;
                            case '':
                                document.getElementById('calc_result').innerText = firstNum;
                                break;
                        }
                    }
+                   check = false;
                    break;
                case 'clear':
                    document.getElementById('calc_result').innerText = '';
                    firstNum = '';
                    secondNum = '';
+                   thirdNum = '';
                    check = false;
                    operator = '';
+                   mainOperator = false;
                    break;
            }
        }
