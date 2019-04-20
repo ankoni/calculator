@@ -154,12 +154,18 @@
                                    operator = 'divis';
                                }
                            } else {
-                               secondNum = calculate(operator, secondNum, thirdNum);
-                               thirdNum = '';
-                               operator = 'divis';
-                               firstNum = calculate(operator, firstNum, secondNum);
-                               secondNum = '';
-                               mainOperator = false;
+                               if (operator == "multi" || operator == "divis") {
+                                   secondNum = calculate(operator, secondNum, thirdNum);
+                                   thirdNum = '';
+                                   operator = 'divis';
+                               } else {
+                                   secondNum = calculate(operator, secondNum, thirdNum);
+                                   thirdNum = '';
+                                   operator = 'divis';
+                                   firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                   secondNum = '';
+                                   mainOperator = false;
+                               }
                            }
                        } else {
                            operator = 'divis';
@@ -184,12 +190,18 @@
                                    operator = 'multi';
                                }
                            } else {
-                               secondNum = calculate(operator, secondNum, thirdNum);
-                               thirdNum = '';
-                               operator = 'multi';
-                               firstNum = calculate(operator, firstNum, secondNum);
-                               secondNum = '';
-                               mainOperator = false;
+                               if (operator == "multi" || operator == "divis") {
+                                   secondNum = calculate(operator, secondNum, thirdNum);
+                                   thirdNum = '';
+                                   operator = 'multi';
+                               } else {
+                                   secondNum = calculate(operator, secondNum, thirdNum);
+                                   thirdNum = '';
+                                   operator = 'multi';
+                                   firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                   secondNum = '';
+                                   mainOperator = false;
+                               }
                            }
                        } else {
                            operator = 'divis';
