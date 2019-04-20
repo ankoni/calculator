@@ -48,6 +48,7 @@
     var firstNum = '';
     var secondNum = '';
     var check = false;
+    var operator = '';
     $('.btn').click(function () {
         var btn = $(this).data('id');
 
@@ -61,27 +62,65 @@
            }
        } else {
            switch (btn) {
-               case ('plus'):
+               case 'plus':
                    document.getElementById('calc_result').innerText+='+';
-                   check = true;
+                   operator = 'plus';
+                   if (check == true) {
+                       firstNum = parseInt(firstNum) + parseInt(secondNum);
+                       secondNum='';
+                   } else {
+                       check = true;
+                   }
                    break;
-               case ('minus'):
+               case 'minus':
                    document.getElementById('calc_result').innerText+='-';
-                   check = true;
+                   operator = 'minus';
+                   if (check == true) {
+                       firstNum = parseInt(firstNum) - parseInt(secondNum);
+                       secondNum='';
+                   } else {
+                       check = true;
+                   }
                    break;
                case 'divis':
                    document.getElementById('calc_result').innerText+='/';
-                   check = true;
+                   operator = 'divis';
+                   if (check == true) {
+                       firstNum = parseInt(firstNum)/parseInt(secondNum);
+                       secondNum='';
+                   } else {
+                       check = true;
+                   }
                    break;
                case 'multi':
                    document.getElementById('calc_result').innerText+='*';
-                   check = true;
+                   operator = 'multi';
+                   if (check == true) {
+                       firstNum = parseInt(firstNum)*parseInt(secondNum);
+                       secondNum='';
+                   } else {
+                       check = true;
+                   }
                    break;
                case 'equal':
                    if (check == false){
                        document.getElementById('calc_result').innerText = firstNum;
                    } else {
-                       document.getElementById('calc_result').innerText = parseInt(firstNum)+parseInt(secondNum);
+                       switch (operator) {
+                           case 'plus':
+                               document.getElementById('calc_result').innerText = parseInt(firstNum)+parseInt(secondNum);
+                               break;
+                           case 'minus':
+                               document.getElementById('calc_result').innerText = parseInt(firstNum)-parseInt(secondNum);
+                               break;
+                           case 'divis':
+                               document.getElementById('calc_result').innerText = parseInt(firstNum)/parseInt(secondNum);
+                               break;
+                           case "multi":
+                               document.getElementById('calc_result').innerText = parseInt(firstNum)*parseInt(secondNum);
+                               break;
+                       }
+
                    }
 
            }
