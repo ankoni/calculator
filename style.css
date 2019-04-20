@@ -46,3 +46,7 @@
     color: #D6D5D5;
 }
 
+button {
+    cursor: pointer;
+}
+
