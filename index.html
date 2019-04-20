@@ -49,8 +49,9 @@
     var secondNum = '';
     var check = false;
     var operator;
-    var lastValueNumber = true;
+
     $('.btn').click(function () {
+
         var btn = $(this).data('id');
 
        if (typeof(btn)=="number" || btn === ".") {
@@ -63,12 +64,10 @@
            }
        } else {
 
-           lastValueNumber = false;
-           if (secondNum == "0" || secondNum == ".0")
+           if (parseFloat(secondNum) === 0)
            {
                secondNum = "";
                check = false;
-               lastValueNumber = true;
                alert("Division by zero is undefined");
            }
 
@@ -76,51 +75,69 @@
                case 'plus':
                    document.getElementById('calc_result').innerText+='+';
 
-                   
-
-                   operator = 'plus';
                    if (check == true && secondNum!="") {
-                       firstNum = parseFloat(firstNum) + parseFloat(secondNum);
-                       secondNum='';
+                       if (operator !== "") {
+                           firstNum = calculate(operator, firstNum, secondNum);
+                           secondNum = "";
+                           operator = 'plus';
+                       }
+                       else {
+                           operator = 'plus';
+                       }
                    } else {
                        check = true;
+                       operator = 'plus';
                    }
                    break;
                case 'minus':
                    document.getElementById('calc_result').innerText+='-';
 
-
-
-                   operator = 'minus';
                    if (check == true && secondNum!="") {
-                       firstNum = parseFloat(firstNum) - parseFloat(secondNum);
-                       secondNum='';
+                       if (operator !== "") {
+                           firstNum = calculate(operator, firstNum, secondNum);
+                           secondNum = "";
+                           operator = 'minus';
+                       } else {
+                           operator = 'minus';
+                       }
                    } else {
                        check = true;
+                       operator = 'minus';
                    }
                    break;
                case 'divis':
                    document.getElementById('calc_result').innerText+='/';
-                   operator = 'divis';
+
                    if (check == true && secondNum!="") {
-                       firstNum = parseFloat(firstNum)/parseFloat(secondNum);
-                       secondNum='';
+                       if (operator !== "") {
+                           calculate(operator, firstNum, secondNum);
+                           secondNum = "";
+                           operator = 'divis';
+                       } else {
+                           operator = 'divis';
+                       }
                    } else {
                        check = true;
+                       operator = 'divis';
                    }
                    break;
                case 'multi':
                    document.getElementById('calc_result').innerText+='*';
-                   operator = 'multi';
+
                    if (check == true && secondNum!="") {
-                       firstNum = parseFloat(firstNum)*parseFloat(secondNum);
-                       secondNum='';
+                       if (operator !== "") {
+                           calculate(operator, firstNum, secondNum);
+                           secondNum = '';
+                           operator = 'multi';
+                       } else {
+                           operator = 'multi';
+                       }
                    } else {
                        check = true;
+                       operator = 'multi';
                    }
                    break;
                case 'equal':
-                   lastValueNumber = true;
                    if (check == false || (check == true && secondNum == "")){
                        document.getElementById('calc_result').innerText = firstNum;
                    }
@@ -175,6 +192,24 @@
            }
        }
     });
+
+    function calculate(operate,firN,secN) {
+        switch (operate) {
+            case 'plus':
+                firN = parseFloat(firN)+parseFloat(secN);
+                return firN;
+            case 'minus':
+                firN = parseFloat(firN)-parseFloat(secN);
+                return firN;
+            case 'divis':
+                firN = parseFloat(firN)/parseFloat(secN);
+                return firN;
+            case "multi":
+                firN = parseFloat(firN)*parseFloat(secN);
+                return firN;
+        }
+
+    }
 </script>
 
 </body>
