@@ -47,21 +47,23 @@
 <script type="text/javascript">
     var firstNum = '';
     var secondNum = '';
-    var thirdNum = '';
-    var check = false;
-    var mainOperator = false;
-    var operator;
-    var preMainOperator;
+    var thirdNum = ''; //for multiple&division
+    var check = false; //for changing number
+    var mainOperator = false; //for case when mult&div not first in line
+    var operator; //for checking last operating
+    var preMainOperator; //operator before mult&div
 
     $('.btn').click(function () {
+       var btn = $(this).data('id'); //value of button
 
-        var btn = $(this).data('id');
-
+        //checking number or operate
        if (typeof(btn)=="number" || btn === ".") {
-           if (check==false) {
+           //check current number
+           if (!check) {
                firstNum += '' + btn;
                document.getElementById('calc_result').innerText += btn;
            } else {
+               //exist multi&div
                if (!mainOperator) {
                    secondNum += '' + btn;
                    document.getElementById('calc_result').innerText += btn;
@@ -71,205 +73,185 @@
                }
            }
        } else {
-
-           if (parseFloat(secondNum) === 0)
-           {
-               secondNum = "";
-               check = false;
-               alert("Division by zero is undefined");
-           }
-
+           //operations
            switch (btn) {
                case 'plus':
                    document.getElementById('calc_result').innerText+='+';
 
-                   if (check == true && secondNum!="") {
-                       if (operator !== "") {
-                           if (!mainOperator) {
-                               firstNum = calculate(operator, firstNum, secondNum);
-                               secondNum = "";
-                               operator = 'plus';
-                               preMainOperator = operator;
-                           } else {
-                               secondNum = calculate(operator, secondNum, thirdNum);
-                               thirdNum = '';
-                               firstNum = calculate(preMainOperator, firstNum, secondNum);
-                               secondNum = '';
-                               mainOperator = false;
-                               operator = 'plus';
-                               preMainOperator = operator;
-                           }
-                       }
-                       else {
+                    //check existing two numbers
+                   if (check && secondNum) {
+                       //case 3(there is */) or 2 numbers
+                       if (mainOperator) {
+                           secondNum = calculate(operator, secondNum, thirdNum);
+                           thirdNum = '';
+                           firstNum = calculate(preMainOperator, firstNum, secondNum);
+                           secondNum = '';
+                           mainOperator = false;
+                           operator = 'plus';
+                           preMainOperator = operator;
+                       } else {
+                           firstNum = calculate(operator, firstNum, secondNum);
+                           secondNum = '';
                            operator = 'plus';
                            preMainOperator = operator;
                        }
                    } else {
-                       check = true;
-                       operator = 'plus';
-                       preMainOperator = operator;
+                       //correct sequence of numbers
+                       if (firstNum) {
+                           check = true;
+                           operator = 'plus';
+                           preMainOperator = operator;
+                       }
                    }
                    break;
                case 'minus':
                    document.getElementById('calc_result').innerText+='-';
 
-                   if (check == true && secondNum!="") {
-                       if (operator !== "") {
-                           if (!mainOperator) {
-                               firstNum = calculate(operator, firstNum, secondNum);
-                               secondNum = "";
-                               operator = 'minus';
-                               preMainOperator = operator;
-                           } else {
-                               secondNum = calculate(operator, secondNum, thirdNum);
-                               thirdNum = '';
-                               firstNum = calculate(preMainOperator, firstNum, secondNum);
-                               secondNum = '';
-                               mainOperator = false;
-                               operator = 'plus';
-                               preMainOperator = operator;
-                           }
+                   if (check && secondNum) {
+                       if (mainOperator) {
+                           secondNum = calculate(operator, secondNum, thirdNum);
+                           thirdNum = '';
+                           firstNum = calculate(preMainOperator, firstNum, secondNum);
+                           secondNum = '';
+                           mainOperator = false;
+                           operator = 'minus';
+                           preMainOperator = operator;
                        } else {
+                           firstNum = calculate(operator, firstNum, secondNum);
+                           secondNum = "";
                            operator = 'minus';
                            preMainOperator = operator;
                        }
                    } else {
-                       check = true;
-                       operator = 'minus';
-                       preMainOperator = operator;
+                       if (!firstNum) {
+                           firstNum += '-';
+                       } else {
+                           check = true;
+                           operator = 'minus';
+                           preMainOperator = operator;
+                       }
                    }
                    break;
                case 'divis':
                    document.getElementById('calc_result').innerText+='/';
 
-                   if (check == true && secondNum!="") {
-                       if (operator !== "") {
-                           if (!mainOperator) {
-                               if (operator == "multi" || operator == "divis") {
-                                   firstNum = calculate(operator, firstNum, secondNum);
-                                   secondNum = "";
-                                   operator = 'divis';
+                   if (check && secondNum) {
+                       if (mainOperator) {
+                           if (operator === "multi" || operator === "divis") {
+                               if (parseFloat(thirdNum) === 0) {
+                                   thirdNum = '';
+                                   alert("Division by zero is undefined");
+                               } else if (parseFloat(secondNum) === 0) {
+                                   secondNum = '';
+                                   alert('Division by zero is underfined');
                                } else {
-                                   mainOperator = true;
+                                   secondNum = calculate(operator, secondNum, thirdNum);
+                                   thirdNum = '';
                                    operator = 'divis';
                                }
                            } else {
-                               if (operator == "multi" || operator == "divis") {
-                                   secondNum = calculate(operator, secondNum, thirdNum);
-                                   thirdNum = '';
-                                   operator = 'divis';
-                               } else {
-                                   secondNum = calculate(operator, secondNum, thirdNum);
-                                   thirdNum = '';
-                                   operator = 'divis';
-                                   firstNum = calculate(preMainOperator, firstNum, secondNum);
-                                   secondNum = '';
-                                   mainOperator = false;
-                               }
+                               secondNum = calculate(operator, secondNum, thirdNum);
+                               thirdNum = '';
+                               operator = 'divis';
+                               firstNum = calculate(preMainOperator, firstNum, secondNum);
+                               secondNum = '';
+                               mainOperator = false;
                            }
                        } else {
-                           operator = 'divis';
+                           if (operator === "multi" || operator === "divis") {
+                               firstNum = calculate(operator, firstNum, secondNum);
+                               secondNum = "";
+                               operator = 'divis';
+                           } else {
+                               mainOperator = true;
+                               operator = 'divis';
+                           }
                        }
                    } else {
-                       check = true;
-                       operator = 'divis';
+                       if (firstNum) {
+                           check = true;
+                           operator = 'divis';
+                       }
                    }
                    break;
                case 'multi':
                    document.getElementById('calc_result').innerText+='*';
 
-                   if (check == true && secondNum!="") {
-                       if (operator !== "") {
-                           if (!mainOperator) {
-                               if (operator == "multi" || operator == "divis") {
-                                   firstNum = calculate(operator, firstNum, secondNum);
-                                   secondNum = "";
-                                   operator = 'multi';
-                               } else {
-                                   mainOperator = true;
-                                   operator = 'multi';
-                               }
+                   if (check && secondNum) {
+                       if (!mainOperator) {
+                           if (operator === "multi" || operator === "divis") {
+                               firstNum = calculate(operator, firstNum, secondNum);
+                               secondNum = "";
+                               operator = 'multi';
                            } else {
-                               if (operator == "multi" || operator == "divis") {
-                                   secondNum = calculate(operator, secondNum, thirdNum);
-                                   thirdNum = '';
-                                   operator = 'multi';
-                               } else {
-                                   secondNum = calculate(operator, secondNum, thirdNum);
-                                   thirdNum = '';
-                                   operator = 'multi';
-                                   firstNum = calculate(preMainOperator, firstNum, secondNum);
-                                   secondNum = '';
-                                   mainOperator = false;
-                               }
+                               mainOperator = true;
+                               operator = 'multi';
                            }
                        } else {
-                           operator = 'divis';
+                           if (operator === "multi" || operator === "divis") {
+                               secondNum = calculate(operator, secondNum, thirdNum);
+                               thirdNum = '';
+                               operator = 'multi';
+                           } else {
+                               secondNum = calculate(operator, secondNum, thirdNum);
+                               thirdNum = '';
+                               operator = 'multi';
+                               firstNum = calculate(preMainOperator, firstNum, secondNum);
+                               secondNum = '';
+                               mainOperator = false;
+                           }
                        }
                    } else {
-                       check = true;
-                       operator = 'multi';
+                       if (firstNum) {
+                           check = true;
+                           operator = 'multi';
+                       }
                    }
                    break;
                case 'equal':
-                   if (check == false || (check == true && secondNum == "")){
-                       document.getElementById('calc_result').innerText = firstNum;
-                   }
-                   else if (firstNum == "" && secondNum!="") {
-                       firstNum = secondNum;
-                       secondNum = "";
-                       document.getElementById('calc_result').innerText = firstNum;
-                   }
-                   else {
+                   if (!check || (check && !secondNum)){
+                       firstNum;
+                   } else {
                        switch (operator) {
                            case 'plus':
                                firstNum = calculate(operator, firstNum, secondNum);
-                               secondNum = '';
-                               operator = '';
-                               document.getElementById('calc_result').innerText = firstNum;
                                break;
                            case 'minus':
                                firstNum = calculate(operator, firstNum, secondNum);
-                               secondNum = '';
-                               operator = '';
-                               document.getElementById('calc_result').innerText = firstNum;
                                break;
                            case 'divis':
-                               if (!mainOperator) {
-                                   firstNum = calculate(operator, firstNum, secondNum);
-                                   secondNum = '';
-                                   operator = '';
-                                   document.getElementById('calc_result').innerText = firstNum;
-                               } else {
-                                   secondNum = calculate(operator, secondNum, thirdNum);
-                                   thirdNum = '';
-                                   firstNum = calculate(preMainOperator, firstNum, secondNum);
-                                   secondNum = '';
-                                   document.getElementById('calc_result').innerText = firstNum;
-                                   operator = '';
+                               if (parseFloat(secondNum)===0 || parseFloat(thirdNum) === 0){
+                                   alert("Division zero");
+                                   if (secondNum) {
+                                       firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                   }
+                               }
+                               else {
+                                   if (!mainOperator) {
+                                       firstNum = calculate(operator, firstNum, secondNum);
+                                   } else {
+                                       secondNum = calculate(operator, secondNum, thirdNum);
+                                       firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                   }
                                }
                                break;
                            case "multi":
                                if (!mainOperator) {
                                    firstNum = calculate(operator, firstNum, secondNum);
-                                   secondNum = '';
-                                   operator = '';
-                                   document.getElementById('calc_result').innerText = firstNum;
                                } else {
                                    secondNum = calculate(operator, secondNum, thirdNum);
-                                   thirdNum = '';
                                    firstNum = calculate(preMainOperator, firstNum, secondNum);
-                                   secondNum = '';
-                                   document.getElementById('calc_result').innerText = firstNum;
-                                   operator = '';
                                }
-                               break;
-                           case '':
-                               document.getElementById('calc_result').innerText = firstNum;
                                break;
                        }
                    }
+                   secondNum = '';
+                   thirdNum = '';
                    check = false;
+                   operator = '';
+                   mainOperator = false;
+                   preMainOperator = '';
+                   document.getElementById('calc_result').innerText = firstNum;
                    break;
                case 'clear':
                    document.getElementById('calc_result').innerText = '';
@@ -279,6 +261,7 @@
                    check = false;
                    operator = '';
                    mainOperator = false;
+                   preMainOperator = '';
                    break;
            }
        }
