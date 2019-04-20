@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple JS</title>
+    <link rel="stylesheet" href="style.css">
+    <script
+    src="http://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
+    crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="calc">
+
+    <div id="calc_result"></div>
+    <div class="calc_btn">
+        <div class="row">
+            <button class="btn btn_grey" data-id = "7">7</button>
+            <button class="btn btn_grey" data-id = "8">8</button>
+            <button class="btn btn_grey" data-id = "9">9</button>
+            <button class="btn btn_op" data-id = "plus">+</button>
+        </div>
+        <div class="row">
+            <button class="btn btn_grey" data-id = "4">4</button>
+            <button class="btn btn_grey" data-id = "5">5</button>
+            <button class="btn btn_grey" data-id = "6">6</button>
+            <button class="btn btn_op" data-id = "minus">-</button>
+        </div>
+        <div class="row">
+            <button class="btn btn_grey" data-id = "1">1</button>
+            <button class="btn btn_grey" data-id = "2">2</button>
+            <button class="btn btn_grey" data-id = "3">3</button>
+            <button class="btn btn_op" data-id = "divis">/</button>
+        </div>
+        <div class="row">
+            <button class="btn btn_grey" data-id = "0">0</button>
+            <button class="btn btn_grey" data-id = ".">.</button>
+            <button class="btn btn_grey" data-id = "equal">=</button>
+            <button class="btn btn_op" data-id = "multi">x</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    var firstNum = '';
+    var secondNum = '';
+    var check = false;
+    $('.btn').click(function () {
+        var btn = $(this).data('id');
+
+       if (typeof(btn)=="number" || btn=='.') {
+           if (check==false) {
+               firstNum += '' + btn;
+               document.getElementById('calc_result').innerText += btn;
+           } else {
+               secondNum += '' + btn;
+               document.getElementById('calc_result').innerText += btn;
+           }
+       } else {
+           switch (btn) {
+               case ('plus'):
+                   document.getElementById('calc_result').innerText+='+';
+                   check = true;
+                   break;
+               case ('minus'):
+                   document.getElementById('calc_result').innerText+='-';
+                   check = true;
+                   break;
+               case 'divis':
+                   document.getElementById('calc_result').innerText+='/';
+                   check = true;
+                   break;
+               case 'multi':
+                   document.getElementById('calc_result').innerText+='*';
+                   check = true;
+                   break;
+               case 'equal':
+                   if (check == false){
+                       document.getElementById('calc_result').innerText = firstNum;
+                   } else {
+                       document.getElementById('calc_result').innerText = parseInt(firstNum)+parseInt(secondNum);
+                   }
+
+           }
+       }
+    });
+</script>
+
+</body>
+</html>
