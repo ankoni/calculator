@@ -233,7 +233,7 @@
                            case 'divis':
                                if (parseFloat(secondNum)===0 || parseFloat(thirdNum) === 0){
                                    alert("Division zero");
-                                   if (secondNum) {
+                                   if (secondNum != 0) {
                                        firstNum = calculate(preMainOperator, firstNum, secondNum);
                                    }
                                }
@@ -241,8 +241,12 @@
                                    if (!mainOperator) {
                                        firstNum = calculate(operator, firstNum, secondNum);
                                    } else {
-                                       secondNum = calculate(operator, secondNum, thirdNum);
-                                       firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                       if (thirdNum == "") {
+                                           firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                       } else {
+                                           secondNum = calculate(operator, secondNum, thirdNum);
+                                           firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                       }
                                    }
                                }
                                break;
@@ -250,8 +254,12 @@
                                if (!mainOperator) {
                                    firstNum = calculate(operator, firstNum, secondNum);
                                } else {
-                                   secondNum = calculate(operator, secondNum, thirdNum);
-                                   firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                   if (thirdNum == "") {
+                                       firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                   } else {
+                                       secondNum = calculate(operator, secondNum, thirdNum);
+                                       firstNum = calculate(preMainOperator, firstNum, secondNum);
+                                   }
                                }
                                break;
                        }
@@ -281,21 +289,27 @@
     });
 
     function calculate(operate,firN,secN) {
-        switch (operate) {
-            case 'plus':
-                firN = parseFloat(firN)+parseFloat(secN);
-                return firN;
-            case 'minus':
-                firN = parseFloat(firN)-parseFloat(secN);
-                return firN;
-            case 'divis':
-                firN = parseFloat(firN)/parseFloat(secN);
-                return firN;
-            case "multi":
-                firN = parseFloat(firN)*parseFloat(secN);
-                return firN;
+        if (operate === 'divis' && parseFloat(secN) === 0)
+        {
+            alert("Division by zero is undefined");
+            document.getElementById('calc_result').innerText = firN;
+            return firN;
+        } else {
+            switch (operate) {
+                case 'plus':
+                    firN = parseFloat(firN)+parseFloat(secN);
+                    return firN;
+                case 'minus':
+                    firN = parseFloat(firN)-parseFloat(secN);
+                    return firN;
+                case 'divis':
+                    firN = parseFloat(firN)/parseFloat(secN);
+                    return firN;
+                case "multi":
+                    firN = parseFloat(firN)*parseFloat(secN);
+                    return firN;
+            }
         }
-
     }
 </script>
 
