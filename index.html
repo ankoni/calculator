@@ -52,12 +52,14 @@
     var mainOperator = false; //for case when mult&div not first in line
     var operator; //for checking last operating
     var preMainOperator; //operator before mult&div
+    var lastSymbol; //write all symbol except 'minus','equal','c'
 
     $('.btn').click(function () {
        var btn = $(this).data('id'); //value of button
 
         //checking number or operate
        if (typeof(btn)=="number" || btn === ".") {
+           lastSymbol = false;
            //check current number
            if (!check) {
                firstNum += '' + btn;
@@ -77,10 +79,11 @@
            switch (btn) {
                case 'plus':
                    document.getElementById('calc_result').innerText+='+';
+                   lastSymbol = true;
 
                     //check existing two numbers
                    if (check && secondNum) {
-                       //case 3(there is */) or 2 numbers
+                       //is there main operation (/*) or no
                        if (mainOperator) {
                            secondNum = calculate(operator, secondNum, thirdNum);
                            thirdNum = '';
@@ -123,17 +126,24 @@
                            preMainOperator = operator;
                        }
                    } else {
+                       //writing negative number if it's first number
                        if (!firstNum) {
                            firstNum += '-';
                        } else {
-                           check = true;
-                           operator = 'minus';
-                           preMainOperator = operator;
+                           if (lastSymbol) {
+                               secondNum += '-';
+                               lastSymbol = false;
+                           } else {
+                               check = true;
+                               operator = 'minus';
+                               preMainOperator = operator;
+                           }
                        }
                    }
                    break;
                case 'divis':
                    document.getElementById('calc_result').innerText+='/';
+                   lastSymbol = true;
 
                    if (check && secondNum) {
                        if (mainOperator) {
@@ -176,6 +186,7 @@
                    break;
                case 'multi':
                    document.getElementById('calc_result').innerText+='*';
+                   lastSymbol = true;
 
                    if (check && secondNum) {
                        if (!mainOperator) {
@@ -250,6 +261,7 @@
                    check = false;
                    operator = '';
                    mainOperator = false;
+                   lastSymbol = false;
                    preMainOperator = '';
                    document.getElementById('calc_result').innerText = firstNum;
                    break;
@@ -261,6 +273,7 @@
                    check = false;
                    operator = '';
                    mainOperator = false;
+                   lastSymbol = false;
                    preMainOperator = '';
                    break;
            }
